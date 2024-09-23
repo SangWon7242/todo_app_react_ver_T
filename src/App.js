@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-const TodoFrom = ({ addTodo: _addTodo }) => {
+const TodoForm = ({ addTodo: _addTodo }) => {
   const [newTodoTitle, setNewTodoTitle] = useState("");
 
   const addTodo = () => {
@@ -30,15 +30,59 @@ const TodoFrom = ({ addTodo: _addTodo }) => {
 };
 
 const TodoListItem = ({ todo, removeTodo: _removeTodo }) => {
+  const [editMode, setEditMode] = useState(false);
+
   const removeTodo = () => {
     _removeTodo(todo.id);
+  };
+
+  const changeEditMode = () => {
+    setEditMode(true);
+  };
+
+  const cancelEditMode = () => {
+    setEditMode(false);
   };
 
   return (
     <li className="flex gap-2">
       <span className="badge badge-outline badge-primary">{todo.id}</span>
-      <span>{todo.title}</span>
-      <button className="btn btn-secondary" onClick={removeTodo}>
+      {editMode ? (
+        <>
+          <div className="inline-flex gap-2">
+            <input
+              className="input input-bordered"
+              type="text"
+              placeholder="할 일을 입력해주세요."
+              value={todo.title}
+            />
+            <button
+              className="btn btn-outline btn-primary"
+              onClick={cancelEditMode}
+            >
+              수정완료
+            </button>
+            <button
+              className="btn btn-outline btn-accent"
+              onClick={cancelEditMode}
+            >
+              수정취소
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <span>{todo.title}</span>
+          <button
+            className="btn btn-outline btn-primary"
+            onClick={changeEditMode}
+          >
+            수정
+          </button>
+        </>
+      )}
+
+      <button className="btn btn-outline btn-secondary" onClick={removeTodo}>
         삭제
       </button>
     </li>
@@ -93,7 +137,7 @@ function App() {
 
   return (
     <>
-      <TodoFrom addTodo={addTodo} />
+      <TodoForm addTodo={addTodo} />
       <TodoList todos={todos} removeTodo={removeTodo} />
     </>
   );
