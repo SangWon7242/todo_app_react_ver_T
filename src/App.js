@@ -7,15 +7,9 @@ const TodoFrom = ({ addTodo: _addTodo }) => {
   const addTodo = () => {
     if (newTodoTitle.trim().length == 0) return;
 
-    const id = 1;
-    const todo = newTodoTitle;
+    const todo = newTodoTitle.trim();
 
-    const newTodo = {
-      id: null,
-      todo,
-    };
-
-    _addTodo(newTodo);
+    _addTodo(todo);
     setNewTodoTitle("");
   };
 
@@ -43,8 +37,14 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [lastTodoId, setLastTodoId] = useState(0);
 
-  const addTodo = (newTodo) => {
-    newTodo.id = lastTodoId + 1;
+  const addTodo = (todo) => {
+    const id = lastTodoId + 1;
+
+    const newTodo = {
+      id,
+      todo,
+    };
+
     setTodos([...todos, newTodo]);
     setLastTodoId(newTodo.id);
   };
