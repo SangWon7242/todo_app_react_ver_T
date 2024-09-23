@@ -11,7 +11,7 @@ const TodoFrom = ({ addTodo: _addTodo }) => {
     const todo = newTodoTitle;
 
     const newTodo = {
-      id,
+      id: null,
       todo,
     };
 
@@ -41,9 +41,12 @@ const TodoList = ({ todos }) => {
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [lastTodoId, setLastTodoId] = useState(0);
 
   const addTodo = (newTodo) => {
+    newTodo.id = lastTodoId + 1;
     setTodos([...todos, newTodo]);
+    setLastTodoId(newTodo.id);
   };
 
   return (
