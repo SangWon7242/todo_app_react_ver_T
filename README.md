@@ -10,4 +10,10 @@ npm install -D tailwindcss
 npx tailwindcss init
 ```
 
+- 데이지 UI 설치
+
+```shell
+npm i -D daisyui@latest
+```
+
 - 지마켓 산스 폰트 적용
