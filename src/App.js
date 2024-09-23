@@ -7,9 +7,9 @@ const TodoFrom = ({ addTodo: _addTodo }) => {
   const addTodo = () => {
     if (newTodoTitle.trim().length == 0) return;
 
-    const todo = newTodoTitle.trim();
+    const title = newTodoTitle.trim();
 
-    _addTodo(todo);
+    _addTodo(title);
     setNewTodoTitle("");
   };
 
@@ -29,20 +29,46 @@ const TodoFrom = ({ addTodo: _addTodo }) => {
   );
 };
 
+const TodoListItem = ({ todo }) => {
+  return (
+    <li className="flex gap-2">
+      <span className="badge badge-outline badge-primary">{todo.id}</span>
+      <span>{todo.title}</span>
+    </li>
+  );
+};
+
 const TodoList = ({ todos }) => {
-  return <>{JSON.stringify(todos)}</>;
+  return (
+    <>
+      {todos.length == 0 ? (
+        <h1 className="mt-3 text-2xl">새 할일 생성</h1>
+      ) : (
+        <>
+          <h1 className="mt-3 text-2xl">== 새 할일 ==</h1>
+          <nav className="mt-3">
+            <ul>
+              {todos.map((todo) => (
+                <TodoListItem key={todo.id} todo={todo} />
+              ))}
+            </ul>
+          </nav>
+        </>
+      )}
+    </>
+  );
 };
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [lastTodoId, setLastTodoId] = useState(0);
 
-  const addTodo = (todo) => {
+  const addTodo = (title) => {
     const id = lastTodoId + 1;
 
     const newTodo = {
       id,
-      todo,
+      title,
     };
 
     setTodos([...todos, newTodo]);
@@ -52,7 +78,6 @@ function App() {
   return (
     <>
       <TodoFrom addTodo={addTodo} />
-      <hr />
       <TodoList todos={todos} />
     </>
   );
