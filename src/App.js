@@ -1,7 +1,58 @@
+import React, { useState } from "react";
 import "./App.css";
 
+const TodoFrom = ({ addTodo: _addTodo }) => {
+  const [newTodoTitle, setNewTodoTitle] = useState("");
+
+  const addTodo = () => {
+    if (newTodoTitle.trim().length == 0) return;
+
+    const id = 1;
+    const todo = newTodoTitle;
+
+    const newTodo = {
+      id,
+      todo,
+    };
+
+    _addTodo(newTodo);
+    setNewTodoTitle("");
+  };
+
+  return (
+    <div className="inline-flex gap-2">
+      <input
+        className="input input-bordered"
+        type="text"
+        placeholder="할 일을 입력해주세요."
+        value={newTodoTitle}
+        onChange={(e) => setNewTodoTitle(e.target.value)}
+      />
+      <button className="btn btn-primary" onClick={addTodo}>
+        등록
+      </button>
+    </div>
+  );
+};
+
+const TodoList = ({ todos }) => {
+  return <>{JSON.stringify(todos)}</>;
+};
+
 function App() {
-  return <div>리액트 시작</div>;
+  const [todos, setTodos] = useState([]);
+
+  const addTodo = (newTodo) => {
+    setTodos([...todos, newTodo]);
+  };
+
+  return (
+    <>
+      <TodoFrom addTodo={addTodo} />
+      <hr />
+      <TodoList todos={todos} />
+    </>
+  );
 }
 
 export default App;
