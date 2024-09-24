@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-const TodoForm = ({ addTodo: _addTodo }) => {
+const TodoForm = ({ todoStatus }) => {
   const [newTodoTitle, setNewTodoTitle] = useState("");
 
   const addTodo = () => {
@@ -9,7 +9,7 @@ const TodoForm = ({ addTodo: _addTodo }) => {
 
     const title = newTodoTitle.trim();
 
-    _addTodo(title);
+    todoStatus.addTodo(title);
     setNewTodoTitle("");
   };
 
@@ -29,22 +29,18 @@ const TodoForm = ({ addTodo: _addTodo }) => {
   );
 };
 
-const TodoListItem = ({
-  todo,
-  removeTodo: _removeTodo,
-  modifyTodo: _modifyTodo,
-}) => {
+const TodoListItem = ({ todo, todoStatus }) => {
   const [newTodoTitle, setNewTodoTitle] = useState(todo.title);
   const [editMode, setEditMode] = useState(false);
 
   const removeTodo = () => {
-    _removeTodo(todo.id);
+    todoStatus.removeTodo(todo.id);
   };
 
   const modifyTodo = () => {
     if (newTodoTitle.trim().length === 0) return;
 
-    _modifyTodo(todo.id, newTodoTitle.trim());
+    todoStatus.modifyTodo(todo.id, newTodoTitle.trim());
     setEditMode(false);
   };
 
@@ -103,7 +99,9 @@ const TodoListItem = ({
   );
 };
 
-const TodoList = ({ todos, removeTodo, modifyTodo }) => {
+const TodoList = ({ todoStatus }) => {
+  const todos = todoStatus.todos;
+
   return (
     <>
       {todos.length === 0 ? (
@@ -117,8 +115,7 @@ const TodoList = ({ todos, removeTodo, modifyTodo }) => {
                 <TodoListItem
                   key={todo.id}
                   todo={todo}
-                  removeTodo={removeTodo}
-                  modifyTodo={modifyTodo}
+                  todoStatus={todoStatus}
                 />
               ))}
             </ul>
@@ -129,7 +126,7 @@ const TodoList = ({ todos, removeTodo, modifyTodo }) => {
   );
 };
 
-function App() {
+const useTodoStatus = () => {
   const [todos, setTodos] = useState([]);
   const [lastTodoId, setLastTodoId] = useState(0);
 
@@ -157,10 +154,21 @@ function App() {
     setTodos(newTodos);
   };
 
+  return {
+    todos,
+    addTodo,
+    removeTodo,
+    modifyTodo,
+  };
+};
+
+function App() {
+  const todoStatus = useTodoStatus(); // 리액트 커스텀 훅
+
   return (
     <>
-      <TodoForm addTodo={addTodo} />
-      <TodoList todos={todos} removeTodo={removeTodo} modifyTodo={modifyTodo} />
+      <TodoForm todoStatus={todoStatus} />
+      <TodoList todoStatus={todoStatus} />
     </>
   );
 }
