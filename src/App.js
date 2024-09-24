@@ -29,11 +29,23 @@ const TodoForm = ({ addTodo: _addTodo }) => {
   );
 };
 
-const TodoListItem = ({ todo, removeTodo: _removeTodo }) => {
+const TodoListItem = ({
+  todo,
+  removeTodo: _removeTodo,
+  modifyTodo: _modifyTodo,
+}) => {
+  const [newTodoTitle, setNewTodoTitle] = useState(todo.title);
   const [editMode, setEditMode] = useState(false);
 
   const removeTodo = () => {
     _removeTodo(todo.id);
+  };
+
+  const modifyTodo = () => {
+    if (newTodoTitle.trim().length === 0) return;
+
+    _modifyTodo(todo.id, newTodoTitle.trim());
+    setEditMode(false);
   };
 
   const changeEditMode = () => {
@@ -42,6 +54,7 @@ const TodoListItem = ({ todo, removeTodo: _removeTodo }) => {
 
   const cancelEditMode = () => {
     setEditMode(false);
+    setNewTodoTitle(todo.title);
   };
 
   return (
@@ -54,11 +67,12 @@ const TodoListItem = ({ todo, removeTodo: _removeTodo }) => {
               className="input input-bordered"
               type="text"
               placeholder="할 일을 입력해주세요."
-              value={todo.title}
+              value={newTodoTitle}
+              onChange={(e) => setNewTodoTitle(e.target.value)}
             />
             <button
               className="btn btn-outline btn-primary"
-              onClick={cancelEditMode}
+              onClick={modifyTodo}
             >
               수정완료
             </button>
@@ -89,7 +103,7 @@ const TodoListItem = ({ todo, removeTodo: _removeTodo }) => {
   );
 };
 
-const TodoList = ({ todos, removeTodo }) => {
+const TodoList = ({ todos, removeTodo, modifyTodo }) => {
   return (
     <>
       {todos.length === 0 ? (
@@ -104,6 +118,7 @@ const TodoList = ({ todos, removeTodo }) => {
                   key={todo.id}
                   todo={todo}
                   removeTodo={removeTodo}
+                  modifyTodo={modifyTodo}
                 />
               ))}
             </ul>
@@ -135,10 +150,17 @@ function App() {
     setTodos(newTodos);
   };
 
+  const modifyTodo = (id, title) => {
+    const newTodos = todos.map((todo) =>
+      todo.id !== id ? todo : { ...todo, title }
+    );
+    setTodos(newTodos);
+  };
+
   return (
     <>
       <TodoForm addTodo={addTodo} />
-      <TodoList todos={todos} removeTodo={removeTodo} />
+      <TodoList todos={todos} removeTodo={removeTodo} modifyTodo={modifyTodo} />
     </>
   );
 }
