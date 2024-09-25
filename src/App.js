@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { produce } from "immer";
 import "./App.css";
 
 const TodoForm = ({ todoStatus }) => {
@@ -138,19 +139,43 @@ const useTodoStatus = () => {
       title,
     };
 
-    setTodos([...todos, newTodo]);
+    // setTodos([...todos, newTodo]);
+
+    // immer 적용
+    const newTodos = produce(todos, (draft) => {
+      draft.push(newTodo);
+    });
+
+    setTodos(newTodos);
+
     setLastTodoId(newTodo.id);
   };
 
   const removeTodo = (id) => {
-    const newTodos = todos.filter((todo) => todo.id !== id);
+    // const newTodos = todos.filter((todo) => todo.id !== id);
+
+    // immer 적용
+    const newTodos = produce(todos, (draft) => {
+      const index = draft.findIndex((todo) => todo.id === id);
+      draft.splice(index, 1);
+    });
+
     setTodos(newTodos);
   };
 
   const modifyTodo = (id, title) => {
+    /*
     const newTodos = todos.map((todo) =>
       todo.id !== id ? todo : { ...todo, title }
     );
+    */
+
+    // immer 적용
+    const newTodos = produce(todos, (draft) => {
+      const index = draft.findIndex((todo) => todo.id === id);
+      draft[index].title = title;
+    });
+
     setTodos(newTodos);
   };
 
